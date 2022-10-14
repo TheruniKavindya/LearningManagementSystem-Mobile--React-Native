@@ -1,21 +1,50 @@
 import React from "react";
+import { Easing } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 
-import { MainLayout } from "./screens";
+import { MainLayout, CourseContent } from "./screens";
 
-const Stack = createNativeStackNavigator();
+const Stack = createSharedElementStackNavigator();
+const options = {
+  gestureEnabled: false,
+  transitionSpec: {
+    open: {
+      animation: "timing",
+      config: { duration: 400, easing: Easing.inOut(Easing.ease) },
+    },
+    close: {
+      animation: "timing",
+      config: { duration: 400, easing: Easing.inOut(Easing.ease) },
+    },
+  },
+  cardStyleInterpolator: ({ current: { progress } }) => {
+    return {
+      cardStyle: {
+        opacity: progress,
+      },
+    };
+  },
+};
 
 const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
+          useNativeDriver: true,
           headerShown: false,
         }}
         initialRouteName={"Dashboard"}
+        detachInactiveScreens={false}
       >
         <Stack.Screen name="Dashboard" component={MainLayout} />
+
+        <Stack.Screen
+          name="CourseContent"
+          component={CourseContent}
+          options={() => options}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

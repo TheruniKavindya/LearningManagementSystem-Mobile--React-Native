@@ -1,15 +1,9 @@
-import React from 'react';
-import {
-    View,
-    Text
-} from 'react-native';
+import React from "react";
+import { View, Text } from "react-native";
+import Courses from "./Courses";
 
 const MainLayout = () => {
-    return (
-        <View>
-            <Text>MainLayout</Text>
-        </View>
-    )
-}
+  return <Courses />;
+};
 
 export default MainLayout;
