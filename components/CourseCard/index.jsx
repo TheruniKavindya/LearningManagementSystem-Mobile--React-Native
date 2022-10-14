@@ -1,10 +1,16 @@
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { COLORS, FONTS, SIZES } from "../../constants";
 import { useFonts } from "expo-font";
+import { SharedElement } from "react-native-shared-element";
 
-const CourseCard = ({ category, containerStyle }) => {
+const CourseCard = ({
+  sharedElementPrefix,
+  category,
+  containerStyle,
+  onPress,
+}) => {
   const [loaded] = useFonts({
     "Roboto-Bold": require("../../assets/fonts/Roboto-Bold.ttf"),
   });
@@ -13,29 +19,53 @@ const CourseCard = ({ category, containerStyle }) => {
     return null;
   }
   return (
-    <TouchableOpacity>
-      <ImageBackground
-        source={category?.thumbnail}
-        resizeMode="cover"
+    <TouchableOpacity
+      style={{
+        width: 150,
+        height: 200,
+        ...containerStyle,
+      }}
+      onPress={onPress}
+    >
+      {/* Image background  */}
+      <SharedElement
+        id={`${sharedElementPrefix}-CourseCard-Bg-${category?.id}`}
+        style={[StyleSheet.absoluteFillObject]}
+      >
+        <Image
+          source={category?.thumbnail}
+          resizeMode="cover"
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: SIZES.radius,
+          }}
+        />
+      </SharedElement>
+
+      {/* Title */}
+      <View
         style={{
-          height: 150,
-          width: 200,
-          paddingVertical: SIZES.padding,
-          paddingHorizontal: SIZES.radius,
-          justifyContent: "flex-end",
-          ...containerStyle,
+          position: "absolute",
+          bottom: 50,
+          left: 8,
         }}
       >
-        <Text
-          style={{
-            color: COLORS.white,
-            ...FONTS.h2,
-          }}
+        <SharedElement
+          id={`${sharedElementPrefix}-CourseCard-Title-${category?.id}`}
+          style={[StyleSheet.absoluteFillObject]}
         >
-          {category?.title}
-        </Text>
-      </ImageBackground>
-      {/* <Text>CourseCard</Text> */}
+          <Text
+            style={{
+              position: "absolute",
+              color: COLORS.white,
+              ...FONTS.h3,
+            }}
+          >
+            {category?.title}
+          </Text>
+        </SharedElement>
+      </View>
     </TouchableOpacity>
   );
 };

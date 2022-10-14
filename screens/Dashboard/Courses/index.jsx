@@ -14,12 +14,27 @@ import { FlatList } from "react-native-gesture-handler";
 
 import CourseCard from "../../../components/CourseCard";
 import { COLORS, FONTS, SIZES, icons, dummyData } from "../../../constants";
-import Animated from "react-native-reanimated";
+import Animated, {
+  event,
+  Extrapolate,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 import { useFonts } from "expo-font";
 import TextButton from "../../../components/TextButton";
+import { useNavigation } from "@react-navigation/native";
 
 const Search = () => {
+  const navigation = useNavigation();
+
   const scrollViewRef = React.useRef();
+
+  const scrollY = useSharedValue(0);
+  const onScroll = useAnimatedScrollHandler((event) => {
+    scrollY.value = event.contentOffSet.y;
+  });
 
   function renderTopSearches() {
     const [loaded] = useFonts({
@@ -67,7 +82,7 @@ const Search = () => {
   function renderBrowsCourses() {
     return (
       <View style={styles.functionStyle}>
-        <Text style={styles.text}>Brows Courses</Text>
+        <Text style={styles.text}>My Courses</Text>
 
         <FlatList
           data={dummyData.categories}
@@ -78,6 +93,7 @@ const Search = () => {
           contentContainerStyle={{ marginTop: SIZES.radius }}
           renderItem={({ item, index }) => (
             <CourseCard
+              shareElementPrefix="Courses"
               category={item}
               containerStyle={{
                 height: 130,
@@ -85,10 +101,66 @@ const Search = () => {
                 marginTop: SIZES.radius,
                 marginLeft: (index + 1) % 2 == 0 ? SIZES.radius : SIZES.padding,
               }}
+              onPress={() =>
+                navigation.navigate("CourseContent", {
+                  category: item,
+                  shareElementPrefix: "Courses",
+                })
+              }
             />
           )}
         />
       </View>
+    );
+  }
+
+  function renderSearchBar() {
+    const inputRange = [0, 55];
+
+    const searchBarAnimatedStyle = useAnimatedStyle(() => {
+      return {
+        height: interpolate(
+          scrollY.value,
+          inputRange,
+          [55, 0],
+          Extrapolate.CLAMP
+        ),
+        opacity: interpolate(
+          scrollY.value,
+          inputRange,
+          [1, 0],
+          Extrapolate.CLAMP
+        ),
+      };
+    });
+
+    return (
+      <Animated.View
+        style={[
+          {
+            position: "absolute",
+            top: 50,
+            left: 0,
+            right: 0,
+            paddingHorizontal: SIZES.padding,
+            height: 50,
+          },
+          searchBarAnimatedStyle,
+        ]}
+      >
+        <Shadow>
+          <View style={styles.searchBar}>
+            <Image source={icons.search} style={styles.searchIcon} />
+
+            <TextInput
+              style={styles.textInput}
+              value=""
+              placeholder="Search Courses"
+              placeholderTextColor={COLORS.gray}
+            />
+          </View>
+        </Shadow>
+      </Animated.View>
     );
   }
 
@@ -103,8 +175,19 @@ const Search = () => {
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         keyboardDismissMode="on-drag"
-        //onScroll
-        //onScrollEndDrag
+        onScroll={onScroll}
+        onScrollEndDrag={(event) => {
+          if (
+            event.nativeEvent.contentOffset.y > 10 &&
+            event.nativeEvent.contentOffset.y < 50
+          ) {
+            scrollViewRef.current?.scrollTo({
+              x: 0,
+              y: 60,
+              animated: true,
+            });
+          }
+        }}
       >
         {/* Top Searches  */}
         {renderTopSearches()}
@@ -112,6 +195,9 @@ const Search = () => {
         {/* Brows Courses */}
         {renderBrowsCourses()}
       </Animated.ScrollView>
+
+      {/* Search Bar */}
+      {renderSearchBar()}
     </View>
   );
 };
@@ -133,6 +219,25 @@ const styles = StyleSheet.create({
   labelStyle: {
     color: COLORS.gray50,
     ...FONTS.h3,
+  },
+  searchBar: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    width: SIZES.width - SIZES.padding * 2,
+    paddingHorizontal: SIZES.radius,
+    borderRadius: SIZES.radius,
+    backgroundColor: COLORS.white,
+  },
+  searchIcon: {
+    width: 25,
+    height: 25,
+    tintColor: COLORS.gray40,
+  },
+  textInput: {
+    flex: 1,
+    marginLeft: SIZES.base,
+    ...FONTS.h4,
   },
 });
 

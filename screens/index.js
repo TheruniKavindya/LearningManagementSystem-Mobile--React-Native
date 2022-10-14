@@ -4,4 +4,7 @@ import Home from "./Dashboard/Home";
 import Profile from "./Dashboard/Profile";
 import Search from "./Dashboard/Courses";
 
-export { MainLayout, Home, Profile, Search };
+//course content
+import CourseContent from "./CourseContent";
+
+export { MainLayout, Home, Profile, Search, CourseContent };
