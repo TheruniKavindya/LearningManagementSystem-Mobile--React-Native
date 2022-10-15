@@ -1,9 +1,11 @@
 import React from "react";
 import { View, Text } from "react-native";
-import Courses from "./Courses";
+import Login from "../Login";
+import Signup from "../Signup";
+// import Courses from "./Courses";
 
 const MainLayout = () => {
-  return <Courses />;
+  return <Signup />;
 };
 
 export default MainLayout;
