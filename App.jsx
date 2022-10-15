@@ -4,8 +4,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 
 import { MainLayout, CourseContent } from "./screens";
+import Login from "./screens/Login";
+import Signup from "./screens/Signup";
+
+import { createStackNavigator } from "@react-navigation/stack";
 
 const Stack = createSharedElementStackNavigator();
+const StackTwo = createStackNavigator();
+
 const options = {
   gestureEnabled: false,
   transitionSpec: {
@@ -40,11 +46,14 @@ const App = () => {
       >
         <Stack.Screen name="Dashboard" component={MainLayout} />
 
-        <Stack.Screen
+        {/* <Stack.Screen
           name="CourseContent"
           component={CourseContent}
           options={() => options}
-        />
+        /> */}
+
+        <StackTwo.Screen name="Login" component={Login} />
+        {/* <StackTwo.Screen name="Signup" component={Signup} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
