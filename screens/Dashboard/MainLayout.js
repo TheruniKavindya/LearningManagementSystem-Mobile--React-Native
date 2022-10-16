@@ -6,8 +6,8 @@ import Courses from "./Courses";
 
 const MainLayout = () => {
   // return <Signup />;
-  return <Courses />;
-  // return <Login />;
+  // return <Courses />;
+  return <Login />;
 };
 
 export default MainLayout;
