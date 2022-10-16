@@ -46,11 +46,11 @@ const App = () => {
       >
         <Stack.Screen name="Dashboard" component={MainLayout} />
 
-        {/* <Stack.Screen
+        <Stack.Screen
           name="CourseContent"
           component={CourseContent}
           options={() => options}
-        /> */}
+        />
 
         <StackTwo.Screen name="Login" component={Login} />
         {/* <StackTwo.Screen name="Signup" component={Signup} /> */}
